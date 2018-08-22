@@ -1,0 +1,83 @@
+apiVersion: kops/v1alpha2
+kind: Cluster
+metadata:
+  name: CLUSTER_NAME
+spec:
+  api:
+    loadBalancer:
+      type: Internal
+  authorization:
+    rbac: {}
+  kubeAPIServer:
+    authorizationRbacSuperUser: admin
+  channel: stable
+  cloudConfig:
+    disableSecurityGroupIngress: true
+  cloudProvider: aws
+  configBase: s3://S3_BUCKET_NAME/CLUSTER_NAME
+  dnsZone: DNS_ZONE_ID
+  etcdClusters:
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a-1
+      name: a-1
+    - instanceGroup: master-us-east-1b-1
+      name: b-1
+    - instanceGroup: master-us-east-1c-1
+      name: c-1
+    name: main
+    enableEtcdTLS: true
+    version: 3.0.17
+  - etcdMembers:
+    - instanceGroup: master-us-east-1a-1
+      name: a-1
+    - instanceGroup: master-us-east-1b-1
+      name: b-1
+    - instanceGroup: master-us-east-1c-1
+      name: c-1
+    name: events
+    enableEtcdTLS: true
+    version: 3.0.17
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.9.10
+  masterPublicName: api.CLUSTER_NAME
+  networkCIDR: NETWORK_CIDR
+  networkID: VPC_ID
+  networking:
+    Calico: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0 
+  subnets:
+  - id: SUBNET_ID
+    name: us-east-1a
+    type: Private
+    zone: us-east-1a
+  - id: SUBNET_ID
+    name: us-east-1b
+    type: Private
+    zone: us-east-1b
+  - id: SUBNET_ID
+    name: us-east-1c
+    type: Private
+    zone: us-east-1c
+  - id: SUBNET_ID
+    name: us-east-1a-util
+    type: Utility
+    zone: us-east-1a
+  - id: SUBNET_ID
+    name: us-east-1b-util
+    type: Utility
+    zone: us-east-1b
+  - id: SUBNET_ID
+    name: us-east-1c-util
+    type: Utility
+    zone: us-east-1c
+  topology:
+    dns:
+      type: Private
+    masters: private
+    nodes: private
